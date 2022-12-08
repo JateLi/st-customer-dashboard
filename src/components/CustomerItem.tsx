@@ -1,4 +1,4 @@
-import { CustomerType } from "../Type";
+import { CustomerType } from "../api/types";
 
 type CustomerItemProps = CustomerType & {
   onClickEdit: () => void;

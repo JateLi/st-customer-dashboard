@@ -3,9 +3,9 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CustomerList from "./pages/CustomerListPage";
-import App from "./App";
+import CustomerEditPage from "./pages/CustomerEditPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,8 +24,8 @@ const router = createBrowserRouter([
     element: <CustomerList />,
   },
   {
-    path: "/test",
-    element: <App />,
+    path: "/edit/:customerId",
+    element: <CustomerEditPage />,
   },
 ]);
 
