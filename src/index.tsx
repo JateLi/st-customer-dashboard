@@ -4,7 +4,7 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
-import CustomerList from "./pages/CustomerList";
+import CustomerList from "./pages/CustomerListPage";
 import App from "./App";
 
 const queryClient = new QueryClient({
