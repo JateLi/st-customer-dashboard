@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getCustomerFn } from "../api/customerApi";
 import { CustomerType } from "../api/types";
 import CustomerForm from "../components/CustomerForm";
+import Loader from "../components/Loader/Loader";
 
 function CustomerEditPage() {
   const navigate = useNavigate();
@@ -28,18 +29,15 @@ function CustomerEditPage() {
   useEffect(() => {
     getCustomerById();
   }, [getCustomerById]);
+
+  if (isLoadingCustomer) return <Loader />;
   return (
     <div className="App">
-      <h1 className="text-3xl font-bold">Customer Edit</h1>
-
       <div>
-        <CustomerForm
-          createdDate={customer?.createdDate}
-          email={customer?.email}
-          name={customer?.name}
-          phoneNumber={customer?.phoneNumber}
-          status={customer?.status}
-        />
+        <h1 className="text-3xl font-bold">Customer Edit</h1>
+        <div>
+          <CustomerForm customer={customer} />
+        </div>
       </div>
     </div>
   );

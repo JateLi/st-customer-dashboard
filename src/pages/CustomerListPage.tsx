@@ -4,15 +4,17 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { CustomerType } from "../api/types";
+import { CustomerStatus, CustomerType } from "../api/types";
 import Loader from "../components/Loader/Loader";
 import CustomerItem from "../components/CustomerItem";
 import { deleteCustomerFn, getAllCustomersFn } from "../api/customerApi";
+import DropDownSelector from "../components/DropDownSelector";
 
 function CustomerList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [customersData, setCustomersData] = useState<CustomerType[]>([]);
+  const [status, setStatus] = useState<string>("all");
 
   const { isLoading: isLoadingCustomers, refetch: getAllCustomers } = useQuery(
     ["customers"],
@@ -65,9 +67,36 @@ function CustomerList() {
 
   if (isLoadingCustomers) return <Loader />;
   return (
-    <>
-      <h1 className="text-3xl font-bold">Customer List</h1>
-      <div className="App">
+    <div className="App">
+      <div>
+        <h1 className="text-3xl font-bold">Customer List</h1>
+
+        <div
+          className={
+            "flex flex-row justify-evenly items-center py-5 border-b-2 border-black"
+          }
+        >
+          <DropDownSelector
+            type={"status"}
+            optionsList={Object.values(CustomerStatus)}
+            onChange={setStatus}
+          />
+          <DropDownSelector
+            type={"sort by"}
+            optionsList={["Name A-Z", "Name Z-A", "Date"]}
+            onChange={setStatus}
+          />
+
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            type="button"
+            onClick={() => {
+              //TODO nav to new customer page
+            }}
+          >
+            + Add
+          </button>
+        </div>
         <table>
           <tbody>
             <tr>
@@ -89,14 +118,14 @@ function CustomerList() {
                 email={item.email}
                 phoneNumber={item.phoneNumber}
                 status={item.status}
-                onClickEdit={() => navigate(`/edit/${item.id}`)}
+                onClickEdit={() => navigate(`/customer/${item.id}`)}
                 onClickDelete={() => onDeleteHandler(String(item.id))}
               />
             ))}
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }
 

@@ -1,17 +1,16 @@
 import React, { useCallback, useState } from "react";
 import TextInput from "./TextInput";
-import { CustomerType } from "../api/types";
+import { CustomerStatus, CustomerType } from "../api/types";
 
-type FormProps = Partial<CustomerType>;
+type FormProps = {
+  customer?: Partial<CustomerType>;
+};
 
-function CustomerForm({
-  createdDate = "",
-  email = "",
-  name = "",
-  phoneNumber = "",
-  status = "Non-Active",
-}: FormProps) {
-  const [editName, setEditName] = useState<string>("");
+function CustomerForm({ customer }: FormProps) {
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [status, setStatus] = useState<string>("");
 
   const handleOnSubmit = useCallback((e: any) => {
     e.preventDefault();
@@ -23,14 +22,15 @@ function CustomerForm({
   //     },
   //     []
   //   );
+
   return (
     <div>
       <form className="w-full max-w-lg" onSubmit={handleOnSubmit}>
         <div className="flex flex-wrap -mx-3 mb-6">
-          <TextInput label="name" value={name} />
+          <TextInput label="name" value={name} setValue={setName} />
           <TextInput label="email" value={email} />
           <TextInput label="phone number" value={phoneNumber} />
-          <TextInput label="created date" value={createdDate} />
+          <TextInput label="created date" value={customer?.createdDate ?? ""} />
           <TextInput label="status" value={status} />
         </div>
 

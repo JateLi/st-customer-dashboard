@@ -24,7 +24,7 @@ const router = createBrowserRouter([
     element: <CustomerList />,
   },
   {
-    path: "/edit/:customerId",
+    path: "/customer/:customerId",
     element: <CustomerEditPage />,
   },
 ]);
