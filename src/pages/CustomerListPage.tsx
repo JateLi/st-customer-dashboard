@@ -1,5 +1,5 @@
 import "../App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,12 +9,14 @@ import Loader from "../components/Loader/Loader";
 import CustomerItem from "../components/CustomerItem";
 import { deleteCustomerFn, getAllCustomersFn } from "../api/customerApi";
 import DropDownSelector from "../components/DropDownSelector";
+import { sortListByType, stringToDate } from "../utils/utils";
 
 function CustomerList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [customersData, setCustomersData] = useState<CustomerType[]>([]);
-  const [status, setStatus] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortFilter, setSortFilter] = useState<string>("none");
 
   const { isLoading: isLoadingCustomers, refetch: getAllCustomers } = useQuery(
     ["customers"],
@@ -65,6 +67,14 @@ function CustomerList() {
     getAllCustomers();
   }, [getAllCustomers]);
 
+  const filteredList = useMemo(() => {
+    if (!customersData) return [];
+
+    return sortListByType(customersData, sortFilter).filter(({ status }) => {
+      return status === statusFilter || statusFilter === "all";
+    });
+  }, [customersData, sortFilter, statusFilter]);
+
   if (isLoadingCustomers) return <Loader />;
   return (
     <div className="App">
@@ -78,21 +88,21 @@ function CustomerList() {
         >
           <DropDownSelector
             type={"status"}
-            optionsList={Object.values(CustomerStatus)}
-            onChange={setStatus}
+            optionsList={["all", ...Object.values(CustomerStatus)]}
+            onChange={setStatusFilter}
+            value={statusFilter}
           />
           <DropDownSelector
             type={"sort by"}
-            optionsList={["Name A-Z", "Name Z-A", "Date"]}
-            onChange={setStatus}
+            optionsList={["none", "Name A-Z", "Name Z-A", "Newest", "Oldest"]}
+            onChange={setSortFilter}
+            value={sortFilter}
           />
 
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             type="button"
-            onClick={() => {
-              //TODO nav to new customer page
-            }}
+            onClick={() => navigate("/customer/new")}
           >
             + Add
           </button>
@@ -109,7 +119,7 @@ function CustomerList() {
               <th></th>
             </tr>
 
-            {customersData.map((item) => (
+            {filteredList.map((item) => (
               <CustomerItem
                 key={item.id}
                 id={item.id}

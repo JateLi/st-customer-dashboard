@@ -2,11 +2,12 @@ type Props = {
   optionsList: string[];
   type: string;
   onChange: (value: string) => void;
+  value: string;
 };
 
-function DropDownSelector({ optionsList, type = " ", onChange }: Props) {
+function DropDownSelector({ optionsList, type = " ", onChange, value }: Props) {
   return (
-    <div className="w-full md:w-1/5 px-2 mb-6 md:mb-0">
+    <div className="w-full md:w-1/3 px-2 mb-6 md:mb-0">
       <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold">
         {type}
       </label>
@@ -14,8 +15,8 @@ function DropDownSelector({ optionsList, type = " ", onChange }: Props) {
         <select
           className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           onChange={(e) => onChange(e.target.value)}
+          value={value}
         >
-          <option>all</option>
           {optionsList.map((item, id) => (
             <option key={id}>{item}</option>
           ))}

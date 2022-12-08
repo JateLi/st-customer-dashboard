@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CustomerList from "./pages/CustomerListPage";
 import CustomerEditPage from "./pages/CustomerEditPage";
+import NewCustomerPage from "./pages/NewCustomerPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: "/customer/:customerId",
     element: <CustomerEditPage />,
+  },
+  {
+    path: "/customer/new",
+    element: <NewCustomerPage />,
   },
 ]);
 

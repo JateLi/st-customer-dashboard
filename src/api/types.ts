@@ -16,8 +16,8 @@ export interface OpportunityType {
 
 export enum CustomerStatus {
   active = "active",
-  nonActive = "Non-Active",
-  lead = "Lead",
+  nonActive = "non-active",
+  lead = "lead",
 }
 
 export enum OpportunityStatus {
