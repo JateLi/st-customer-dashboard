@@ -8,6 +8,7 @@ import CustomerForm from "../components/CustomerForm";
 import Loader from "../components/Loader/Loader";
 import { getAllOpportunitiesFn } from "../api/opportunityApi";
 import OpportunityItem from "../components/OpportunityItem";
+import OpportunitiesList from "../components/OpportunitiesList";
 
 function CustomerEditPage() {
   const navigate = useNavigate();
@@ -34,9 +35,8 @@ function CustomerEditPage() {
       ["opportunities"],
       () => getAllOpportunitiesFn(params.customerId ?? ""),
       {
-        enabled: false,
         onSuccess: (data: OpportunityType[]) => {
-          console.log("res ", data);
+          console.log("opportunities ", data);
           setOpportunities(data);
         },
         onError: (err: any) => {
@@ -57,38 +57,20 @@ function CustomerEditPage() {
   if (isLoadingCustomer || isLoadingOpportunities) return <Loader />;
   return (
     <div className="App">
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        type="button"
+        onClick={() => navigate(-1)}
+      >
+        Back
+      </button>
+      <h1 className="text-3xl font-bold">{`Customer ${
+        params.customerId ?? ""
+      } Edit`}</h1>
       <div>
-        <h1 className="text-3xl font-bold">Customer Edit</h1>
-
         <CustomerForm customer={customer} onSubmitHandler={onSubmitHandler} />
-        <table>
-          <tbody>
-            <tr>
-              <td>id</td>
-              <td>name</td>
-              <td>status</td>
-              <td>customerId</td>
-              <th></th>
-            </tr>
-
-            {opportunities.map((item) => (
-              <OpportunityItem
-                key={item.id}
-                id={item.id}
-                name={item.name}
-                status={item.status}
-                customerId={item.customerId}
-                onClickEdit={() => {
-                  console.log("edit");
-                }}
-                onClickDelete={() => {
-                  console.log("delelte api");
-                }}
-              />
-            ))}
-          </tbody>
-        </table>
       </div>
+      <OpportunitiesList opportunities={opportunities} />
     </div>
   );
 }

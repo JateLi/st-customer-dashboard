@@ -3,8 +3,10 @@ import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import { createCustomerFn } from "../api/customerApi";
 import { CustomerStatus } from "../api/types";
+import { useNavigate } from "react-router-dom";
 
 function NewCustomerPage() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { isLoading, mutate: createCustomer } = useMutation(
     (customer: FormData) => createCustomerFn(customer),
@@ -32,7 +34,6 @@ function NewCustomerPage() {
 
   const onSubmitHandler = (values: any) => {
     var formData = new FormData();
-
     formData.set("name", values.name);
     formData.set("email", values.email);
     formData.set("phoneNumber", values.phoneNumber);
@@ -43,11 +44,16 @@ function NewCustomerPage() {
 
   return (
     <div className="App">
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        type="button"
+        onClick={() => navigate(-1)}
+      >
+        Back
+      </button>
+      <h1 className="text-3xl font-bold">Customer New</h1>
       <div>
-        <h1 className="text-3xl font-bold">Customer New</h1>
-        <div>
-          <CustomerForm onSubmitHandler={onSubmitHandler} />
-        </div>
+        <CustomerForm onSubmitHandler={onSubmitHandler} />
       </div>
     </div>
   );

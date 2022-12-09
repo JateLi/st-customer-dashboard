@@ -17,6 +17,7 @@ function CustomerList() {
   const [customersData, setCustomersData] = useState<CustomerType[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortFilter, setSortFilter] = useState<string>("none");
+  const [isLoadingList, setIsLoadingList] = useState<boolean>(true);
 
   const { isLoading: isLoadingCustomers, refetch: getAllCustomers } = useQuery(
     ["customers"],
@@ -24,6 +25,7 @@ function CustomerList() {
     {
       onSuccess: (data: CustomerType[]) => {
         setCustomersData(data);
+        setIsLoadingList(false);
       },
       onError: (error: any) => {
         toast.error((error as any).data.message, {
@@ -74,7 +76,7 @@ function CustomerList() {
     });
   }, [customersData, sortFilter, statusFilter]);
 
-  if (isLoadingCustomers) return <Loader />;
+  if (isLoadingList || isLoadingCustomers) return <Loader />;
   return (
     <div className="App">
       <div>
