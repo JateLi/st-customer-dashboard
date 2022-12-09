@@ -9,6 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 import CustomerList from "./pages/CustomerListPage";
 import CustomerEditPage from "./pages/CustomerEditPage";
 import NewCustomerPage from "./pages/NewCustomerPage";
+import NewOpportunityPage from "./pages/NewOpportunityPage";
+import OpportunityEditPage from "./pages/OpportunityEditPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,6 +35,14 @@ const router = createBrowserRouter([
   {
     path: "/customer/new",
     element: <NewCustomerPage />,
+  },
+  {
+    path: "/customer/:customerId/opportunities/:opId",
+    element: <OpportunityEditPage />,
+  },
+  {
+    path: "/customer/:customerId/opportunities/new",
+    element: <NewOpportunityPage />,
   },
 ]);
 

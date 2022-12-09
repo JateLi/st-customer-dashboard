@@ -7,7 +7,10 @@ import { getCustomerFn, updateCustomerFn } from "../api/customerApi";
 import { CustomerType, OpportunityType } from "../api/types";
 import CustomerForm from "../components/CustomerForm";
 import Loader from "../components/Loader/Loader";
-import { getAllOpportunitiesFn } from "../api/opportunityApi";
+import {
+  deleteOpportunityFn,
+  getAllOpportunitiesFn,
+} from "../api/opportunityApi";
 import OpportunitiesList from "../components/OpportunitiesList";
 
 function CustomerEditPage() {
@@ -25,8 +28,18 @@ function CustomerEditPage() {
       onSuccess: (data: CustomerType) => {
         setCustomer(data);
       },
-      onError: (err: any) => {
-        console.log(err.response);
+      onError: (error: any) => {
+        if (Array.isArray(error.response.data.error)) {
+          error.data.error.forEach((el: any) =>
+            toast.error(el.message, {
+              position: "top-right",
+            })
+          );
+        } else {
+          toast.error(error.response.data.message, {
+            position: "top-right",
+          });
+        }
       },
     }
   );
@@ -71,10 +84,40 @@ function CustomerEditPage() {
     }
   );
 
+  const { mutate: deleteOpportunity } = useMutation(
+    ({ id, opId }: { id: string; opId: string }) =>
+      deleteOpportunityFn(id, opId),
+    {
+      onSuccess: (data: any) => {
+        queryClient.invalidateQueries("opportunities");
+        toast.success("Opportunity deleted successfully");
+      },
+      onError(error: any) {
+        if (Array.isArray((error as any).data.error)) {
+          (error as any).data.error.forEach((el: any) =>
+            toast.error(el.message, {
+              position: "top-right",
+            })
+          );
+        } else {
+          toast.error((error as any).data.message, {
+            position: "top-right",
+          });
+        }
+      },
+    }
+  );
+
   useEffect(() => {
     getCustomerById();
     getOpportunitiesById();
   }, [getCustomerById, getOpportunitiesById]);
+
+  const onDeleteHandler = (id: string, opId: string) => {
+    if (window.confirm("Are you sure")) {
+      deleteOpportunity({ id, opId });
+    }
+  };
 
   const onSubmitHandler = (values: any) => {
     const formData = new FormData();
@@ -103,7 +146,11 @@ function CustomerEditPage() {
       <div>
         <CustomerForm customer={customer} onSubmitHandler={onSubmitHandler} />
       </div>
-      <OpportunitiesList opportunities={opportunities} />
+      <OpportunitiesList
+        opportunities={opportunities}
+        customerId={params.customerId ?? ""}
+        onClickDelete={onDeleteHandler}
+      />
     </div>
   );
 }

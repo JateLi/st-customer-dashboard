@@ -18,7 +18,11 @@ export const getOpportunityFn = async (id: string, opId: string) => {
 export const createOpportunityFn = async (id: string, formData: FormData) => {
   const response = await apiClient.post<OpportunityType>(
     `/customers/${id}/opportunities/`,
-    formData,
+    {
+      name: formData.get("name"),
+      status: formData.get("status"),
+      customerId: formData.get("customerId"),
+    },
     {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -39,7 +43,11 @@ export const updateOpportunityFn = async ({
 }) => {
   const response = await apiClient.patch<OpportunityType>(
     `/customers/${id}/opportunities/${opId}`,
-    formData,
+    {
+      name: formData.get("name"),
+      status: formData.get("status"),
+      customerId: formData.get("customerId"),
+    },
     {
       headers: {
         "Content-Type": "multipart/form-data",
