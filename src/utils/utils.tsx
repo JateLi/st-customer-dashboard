@@ -1,9 +1,14 @@
 import { CustomerType } from "../api/types";
-import { parse } from "date-fns";
+import { format, parse } from "date-fns";
 
 export const stringToDate = (stringDate: string) => {
   if (stringDate === "") return new Date();
   return parse(stringDate, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+};
+
+export const covertToDisplayDate = (stringDate: string) => {
+  if (stringDate === "") return "";
+  return format(stringToDate(stringDate), "MM/dd/yyyy HH:mm");
 };
 
 export const sortListByType = (arr: CustomerType[], type: string) => {

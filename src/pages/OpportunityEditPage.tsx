@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  deleteOpportunityFn,
-  getOpportunityFn,
-  updateOpportunityFn,
-} from "../api/opportunityApi";
+import { getOpportunityFn, updateOpportunityFn } from "../api/opportunityApi";
 import { OpportunityType } from "../api/types";
 import OpportunityForm from "../components/OpportunityForm";
 
@@ -16,30 +12,29 @@ function OpportunityEditPage() {
   const params = useParams();
   const [opportunity, setOpportunity] = useState<OpportunityType>();
 
-  const { isLoading: isLoadingCustomer, refetch: getOpportunityById } =
-    useQuery(
-      ["opportunity"],
-      () => getOpportunityFn(params.customerId ?? "", params.opId ?? ""),
-      {
-        enabled: false,
-        onSuccess: (data: OpportunityType) => {
-          setOpportunity(data);
-        },
-        onError: (error: any) => {
-          if (Array.isArray(error.response.data.error)) {
-            error.data.error.forEach((el: any) =>
-              toast.error(el.message, {
-                position: "top-right",
-              })
-            );
-          } else {
-            toast.error(error.response.data.message, {
+  const { refetch: getOpportunityById } = useQuery(
+    ["opportunity"],
+    () => getOpportunityFn(params.customerId ?? "", params.opId ?? ""),
+    {
+      enabled: false,
+      onSuccess: (data: OpportunityType) => {
+        setOpportunity(data);
+      },
+      onError: (error: any) => {
+        if (Array.isArray(error.response.data.error)) {
+          error.data.error.forEach((el: any) =>
+            toast.error(el.message, {
               position: "top-right",
-            });
-          }
-        },
-      }
-    );
+            })
+          );
+        } else {
+          toast.error(error.response.data.message, {
+            position: "top-right",
+          });
+        }
+      },
+    }
+  );
 
   const { mutate: updateOpportunity } = useMutation(
     ({

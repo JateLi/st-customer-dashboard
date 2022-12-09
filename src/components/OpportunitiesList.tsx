@@ -15,6 +15,19 @@ function OpportunitiesList({
   onClickDelete,
 }: Props) {
   const navigate = useNavigate();
+
+  if (opportunities.length === 0)
+    return (
+      <div>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-3"
+          type="button"
+          onClick={() => navigate(`/customer/${customerId}/opportunities/new`)}
+        >
+          + Add a new opportunity
+        </button>
+      </div>
+    );
   return (
     <div>
       <table>

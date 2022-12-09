@@ -9,7 +9,7 @@ import Loader from "../components/Loader/Loader";
 import CustomerItem from "../components/CustomerItem";
 import { deleteCustomerFn, getAllCustomersFn } from "../api/customerApi";
 import DropDownSelector from "../components/DropDownSelector";
-import { sortListByType, stringToDate } from "../utils/utils";
+import { sortListByType, covertToDisplayDate } from "../utils/utils";
 
 function CustomerList() {
   const navigate = useNavigate();
@@ -125,7 +125,7 @@ function CustomerList() {
                 key={item.id}
                 id={item.id}
                 name={item.name}
-                createdDate={item.createdDate}
+                createdDate={covertToDisplayDate(item.createdDate)}
                 email={item.email}
                 phoneNumber={item.phoneNumber}
                 status={item.status}

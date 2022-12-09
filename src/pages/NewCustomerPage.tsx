@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 function NewCustomerPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isLoading, mutate: createCustomer } = useMutation(
+  const { mutate: createCustomer } = useMutation(
     (customer: FormData) => createCustomerFn(customer),
     {
       onSuccess: (date) => {
