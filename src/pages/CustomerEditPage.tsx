@@ -50,13 +50,17 @@ function CustomerEditPage() {
     getOpportunitiesById();
   }, [getCustomerById, getOpportunitiesById]);
 
+  const onSubmitHandler = (values: any) => {
+    const formData = new FormData();
+  };
+
   if (isLoadingCustomer || isLoadingOpportunities) return <Loader />;
   return (
     <div className="App">
       <div>
         <h1 className="text-3xl font-bold">Customer Edit</h1>
 
-        <CustomerForm customer={customer} />
+        <CustomerForm customer={customer} onSubmitHandler={onSubmitHandler} />
         <table>
           <tbody>
             <tr>

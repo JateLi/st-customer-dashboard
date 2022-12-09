@@ -5,17 +5,23 @@ import DropDownSelector from "./DropDownSelector";
 
 type FormProps = {
   customer?: Partial<CustomerType>;
+  onSubmitHandler: (values: any) => void;
 };
 
-function CustomerForm({ customer }: FormProps) {
+function CustomerForm({ customer, onSubmitHandler }: FormProps) {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [status, setStatus] = useState<string>(CustomerStatus.nonActive);
 
-  const handleOnSubmit = useCallback((e: any) => {
-    e.preventDefault();
-  }, []);
+  const handleOnSubmit = useCallback(
+    (e: any) => {
+      e.preventDefault();
+
+      onSubmitHandler({ name, email, phoneNumber, status });
+    },
+    [email, name, onSubmitHandler, phoneNumber, status]
+  );
 
   useEffect(() => {
     if (!customer) return;
@@ -24,13 +30,6 @@ function CustomerForm({ customer }: FormProps) {
     setPhoneNumber(customer?.phoneNumber ?? "");
     setStatus(customer.status ?? CustomerStatus.nonActive);
   }, [customer]);
-
-  //   const handleOnChange = useCallback(
-  //     (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     //   const value = event.target.value;
-  //     },
-  //     []
-  //   );
 
   return (
     <div>

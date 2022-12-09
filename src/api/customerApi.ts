@@ -12,11 +12,21 @@ export const getCustomerFn = async (id: string) => {
 };
 
 export const createCustomerFn = async (formData: FormData) => {
-  const response = await apiClient.post<CustomerType>(`/customers`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
+  const response = await apiClient.post<CustomerType>(
+    `/customers`,
+    {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phoneNumber: formData.get("phoneNumber"),
+      status: formData.get("status"),
+      createdDate: formData.get("createdDate"),
     },
-  });
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
   return response.data;
 };
 

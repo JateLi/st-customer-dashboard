@@ -4,6 +4,8 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import CustomerList from "./pages/CustomerListPage";
 import CustomerEditPage from "./pages/CustomerEditPage";
 import NewCustomerPage from "./pages/NewCustomerPage";
@@ -41,6 +43,7 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <ToastContainer />
     </QueryClientProvider>
   </React.StrictMode>
 );

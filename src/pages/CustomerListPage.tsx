@@ -22,7 +22,6 @@ function CustomerList() {
     ["customers"],
     () => getAllCustomersFn(),
     {
-      enabled: false,
       onSuccess: (data: CustomerType[]) => {
         setCustomersData(data);
       },
@@ -37,7 +36,7 @@ function CustomerList() {
   const { mutate: deleteCustomer } = useMutation(
     (id: string) => deleteCustomerFn(id),
     {
-      onSuccess(data) {
+      onSuccess: (data: any) => {
         queryClient.invalidateQueries("customers");
         toast.success("Customer deleted successfully");
       },
