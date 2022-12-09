@@ -1,17 +1,18 @@
 import "../App.css";
 import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams, useNavigate } from "react-router-dom";
-import { getCustomerFn } from "../api/customerApi";
+import { toast } from "react-toastify";
+import { getCustomerFn, updateCustomerFn } from "../api/customerApi";
 import { CustomerType, OpportunityType } from "../api/types";
 import CustomerForm from "../components/CustomerForm";
 import Loader from "../components/Loader/Loader";
 import { getAllOpportunitiesFn } from "../api/opportunityApi";
-import OpportunityItem from "../components/OpportunityItem";
 import OpportunitiesList from "../components/OpportunitiesList";
 
 function CustomerEditPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const params = useParams();
   const [customer, setCustomer] = useState<CustomerType>();
   const [opportunities, setOpportunities] = useState<OpportunityType[]>([]);
@@ -45,6 +46,31 @@ function CustomerEditPage() {
       }
     );
 
+  const { mutate: updateCustomer } = useMutation(
+    ({ id, formData }: { id: string; formData: FormData }) =>
+      updateCustomerFn({ id, formData }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["customers"]);
+        toast.success("Customer updated successfully");
+        navigate(-1);
+      },
+      onError: (error: any) => {
+        if (Array.isArray(error.response.data.error)) {
+          error.data.error.forEach((el: any) =>
+            toast.error(el.message, {
+              position: "top-right",
+            })
+          );
+        } else {
+          toast.error(error.response.data.message, {
+            position: "top-right",
+          });
+        }
+      },
+    }
+  );
+
   useEffect(() => {
     getCustomerById();
     getOpportunitiesById();
@@ -52,6 +78,13 @@ function CustomerEditPage() {
 
   const onSubmitHandler = (values: any) => {
     const formData = new FormData();
+    if (!customer) return;
+    formData.set("name", values.name);
+    formData.set("email", values.email);
+    formData.set("phoneNumber", values.phoneNumber);
+    formData.set("createdDate", customer.createdDate);
+    formData.set("status", values.status);
+    updateCustomer({ id: String(customer?.id!), formData });
   };
 
   if (isLoadingCustomer || isLoadingOpportunities) return <Loader />;

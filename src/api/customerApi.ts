@@ -39,7 +39,13 @@ export const updateCustomerFn = async ({
 }) => {
   const response = await apiClient.patch<CustomerType>(
     `customers/${id}`,
-    formData,
+    {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phoneNumber: formData.get("phoneNumber"),
+      status: formData.get("status"),
+      createdDate: formData.get("createdDate"),
+    },
     {
       headers: {
         "Content-Type": "multipart/form-data",
