@@ -4,12 +4,12 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { CustomerStatus, CustomerType } from "../api/types";
+import { CustomerType } from "../api/types";
 import Loader from "../components/Loader/Loader";
 import CustomerItem from "../components/CustomerItem";
 import { deleteCustomerFn, getAllCustomersFn } from "../api/customerApi";
-import DropDownSelector from "../components/DropDownSelector";
 import { sortListByType, covertToDisplayDate } from "../utils/utils";
+import ListHeader from "../components/ListHeader";
 
 function CustomerList() {
   const navigate = useNavigate();
@@ -76,38 +76,22 @@ function CustomerList() {
     });
   }, [customersData, sortFilter, statusFilter]);
 
+  const navToRouter = (router: string) => {
+    navigate(router);
+  };
+
   if (isLoadingList || isLoadingCustomers) return <Loader />;
   return (
     <div className="App">
       <div>
         <h1 className="text-3xl font-bold">Customer List</h1>
-
-        <div
-          className={
-            "flex flex-row justify-evenly items-center py-5 border-b-2 border-black"
-          }
-        >
-          <DropDownSelector
-            type={"status"}
-            optionsList={["all", ...Object.values(CustomerStatus)]}
-            onChange={setStatusFilter}
-            value={statusFilter}
-          />
-          <DropDownSelector
-            type={"sort by"}
-            optionsList={["none", "Name A-Z", "Name Z-A", "Newest", "Oldest"]}
-            onChange={setSortFilter}
-            value={sortFilter}
-          />
-
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            type="button"
-            onClick={() => navigate("/customer/new")}
-          >
-            + Add
-          </button>
-        </div>
+        <ListHeader
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          sortFilter={sortFilter}
+          setSortFilter={setSortFilter}
+          navTo={navToRouter}
+        />
         <table>
           <tbody>
             <tr>

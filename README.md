@@ -1,6 +1,8 @@
-## Available Scripts
+## Getting Started
 
-In the project directory, you can run:
+First, install all exact version dependencies
+
+npm ci
 
 ### `npm start`
 
@@ -13,5 +15,5 @@ You will also see any lint errors in the console.
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
 # st-customer-dashboard

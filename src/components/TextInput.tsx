@@ -1,6 +1,4 @@
-import { SetState } from "ahooks/lib/useSetState";
 import { useCallback } from "react";
-import { CustomerType } from "../api/types";
 
 type Props = {
   label: string;
@@ -14,10 +12,10 @@ type Props = {
 function TextInput({
   label,
   value,
-  isValidate = true,
+  isValidate = false,
   placeHolder = "",
   setValue,
-  disabled = true,
+  disabled = false,
 }: Props) {
   const handleOnChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

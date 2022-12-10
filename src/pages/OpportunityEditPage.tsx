@@ -86,14 +86,16 @@ function OpportunityEditPage() {
 
   return (
     <div className="App">
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        type="button"
-        onClick={() => navigate(-1)}
-      >
-        Back
-      </button>
-      <h1 className="text-3xl font-bold">Opportunity New</h1>
+      <div className="absolute h-20 w-20 left-5 top-2">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          type="button"
+          onClick={() => navigate(-1)}
+        >
+          Back
+        </button>
+      </div>
+      <h1 className="text-3xl font-bold">Opportunity Edit</h1>
       <div>
         <OpportunityForm
           onSubmitHandler={onSubmitHandler}

@@ -27,7 +27,6 @@ export const sortListByType = (arr: CustomerType[], type: string) => {
 };
 
 export const sortedAscAlphabet = (arr: CustomerType[]) => {
-  if (arr.length === 0) return [];
   return arr.sort((a, b) => {
     if (a.name < b.name) {
       return -1;
@@ -40,12 +39,10 @@ export const sortedAscAlphabet = (arr: CustomerType[]) => {
 };
 
 export const sortedDescAlphabet = (arr: CustomerType[]) => {
-  if (arr.length === 0) return [];
   return sortedAscAlphabet(arr).reverse();
 };
 
 export const sortedAscDate = (arr: CustomerType[]) => {
-  if (arr.length === 0) return [];
   return arr.sort((a, b) => {
     const dateA = stringToDate(a.createdDate);
     const dateB = stringToDate(b.createdDate);
@@ -54,6 +51,5 @@ export const sortedAscDate = (arr: CustomerType[]) => {
 };
 
 export const sortedDescDate = (arr: CustomerType[]) => {
-  if (arr.length === 0) return [];
   return sortedAscDate(arr).reverse();
 };

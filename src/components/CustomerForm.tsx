@@ -33,7 +33,7 @@ function CustomerForm({ customer, onSubmitHandler }: FormProps) {
 
   return (
     <div>
-      <form className="w-full max-w-lg" onSubmit={handleOnSubmit}>
+      <form className="w-full max-w-lg my-5" onSubmit={handleOnSubmit}>
         <div className="flex flex-wrap -mx-3 mb-6">
           <TextInput label="name" value={name} setValue={setName} />
           <TextInput label="email" value={email} setValue={setEmail} />

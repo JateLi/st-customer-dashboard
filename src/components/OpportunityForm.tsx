@@ -29,8 +29,8 @@ function OpportunityForm({ opportunity, onSubmitHandler }: Props) {
 
   return (
     <div>
-      <form className="w-full max-w-lg" onSubmit={handleOnSubmit}>
-        <div className="flex flex-wrap -mx-3 mb-6">
+      <form className="w-full max-w-lg my-5" onSubmit={handleOnSubmit}>
+        <div className="flex flex-wrap -mx-3 mb-6 justify-evenly items-center">
           <TextInput label="name" value={name} setValue={setName} />
           <DropDownSelector
             type={"status"}
