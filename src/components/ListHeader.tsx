@@ -5,9 +5,13 @@ import DropDownSelector from "./DropDownSelector";
 
 type Props = {
   statusFilter: string;
-  setStatusFilter: React.Dispatch<React.SetStateAction<string>>;
+  setStatusFilter:
+    | React.Dispatch<React.SetStateAction<string>>
+    | ((value: string) => void);
   sortFilter: string;
-  setSortFilter: React.Dispatch<React.SetStateAction<string>>;
+  setSortFilter:
+    | React.Dispatch<React.SetStateAction<string>>
+    | ((value: string) => void);
 };
 
 function ListHeader({

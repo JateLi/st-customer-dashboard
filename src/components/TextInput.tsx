@@ -3,7 +3,7 @@ import { useCallback } from "react";
 type Props = {
   label: string;
   value: string;
-  isValidate?: boolean;
+  validateMessage?: string;
   placeHolder?: string;
   setValue?: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean;
@@ -12,7 +12,7 @@ type Props = {
 function TextInput({
   label,
   value,
-  isValidate = false,
+  validateMessage,
   placeHolder = "",
   setValue,
   disabled = false,
@@ -27,13 +27,13 @@ function TextInput({
     [setValue]
   );
   return (
-    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0 my-2">
       <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
         {label}
       </label>
       <input
         className={`appearance-none block w-full bg-gray-200 text-gray-700 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white
-        ${(!value || isValidate) && "border-red-500"}`}
+        ${(!value || validateMessage) && "border-red-500"}`}
         type="text"
         placeholder={placeHolder}
         onChange={handleOnChange}
@@ -45,6 +45,9 @@ function TextInput({
         <p className="text-red-500 text-xs italic">
           Please fill out this field.
         </p>
+      )}
+      {!validateMessage ? null : (
+        <p className="text-red-500 text-xs italic">{validateMessage}</p>
       )}
     </div>
   );

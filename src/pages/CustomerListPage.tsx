@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -14,8 +14,18 @@ import ListHeader from "../components/ListHeader";
 function CustomerList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [sortFilter, setSortFilter] = useState<string>(SortedType.none);
+  const [statusFilter, setStatusFilter] = useLocalStorageState<string>(
+    "local-status-filter",
+    {
+      defaultValue: "all",
+    }
+  );
+  const [sortFilter, setSortFilter] = useLocalStorageState<string>(
+    "local-sort-filter",
+    {
+      defaultValue: SortedType.none,
+    }
+  );
   const [customersData, setCustomersData] = useLocalStorageState<
     CustomerType[]
   >("local-storage-customer-list", {

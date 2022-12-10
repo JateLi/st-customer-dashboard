@@ -8,6 +8,13 @@ type FormProps = {
   onSubmitHandler: (values: any) => void;
 };
 
+const emailValidate = (email: string) => {
+  if (email === "") return "";
+  if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email))
+    return "Invalid email address";
+  return "";
+};
+
 function CustomerForm({ customer, onSubmitHandler }: FormProps) {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -36,7 +43,12 @@ function CustomerForm({ customer, onSubmitHandler }: FormProps) {
       <form className="w-full max-w-lg my-5" onSubmit={handleOnSubmit}>
         <div className="flex flex-wrap -mx-3 mb-6">
           <TextInput label="name" value={name} setValue={setName} />
-          <TextInput label="email" value={email} setValue={setEmail} />
+          <TextInput
+            label="email"
+            value={email}
+            setValue={setEmail}
+            validateMessage={emailValidate(email)}
+          />
           <TextInput
             label="phone number"
             value={phoneNumber}
