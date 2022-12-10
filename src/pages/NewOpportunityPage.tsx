@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createOpportunityFn } from "../api/opportunityApi";
+import { PostOpportunityType } from "../api/types";
 import OpportunityForm from "../components/OpportunityForm";
 
 function NewOpportunityPage() {
@@ -10,35 +11,29 @@ function NewOpportunityPage() {
   const params = useParams();
 
   const { mutate: createOpportunity } = useMutation(
-    (opportunity: FormData) =>
+    (opportunity: PostOpportunityType) =>
       createOpportunityFn(params.customerId ?? "", opportunity),
     {
-      onSuccess: (date) => {
-        console.log("date.....", date);
+      onSuccess: () => {
         queryClient.invalidateQueries(["opportunities"]);
         toast.success("Opportunity created successfully");
+        navigate(-1);
       },
       onError: (error: any) => {
-        if (Array.isArray(error.response.data.error)) {
-          error.data.error.forEach((el: any) =>
-            toast.error(el.message, {
-              position: "top-right",
-            })
-          );
-        } else {
-          toast.error(error.response.data.message, {
-            position: "top-right",
-          });
-        }
+        toast.error(error.response.data.message, {
+          position: "top-right",
+        });
       },
     }
   );
 
-  const onSubmitHandler = (values: any) => {
-    var formData = new FormData();
-    formData.set("name", values.name);
-    formData.set("status", values.status);
-    formData.set("customerId", params.customerId ?? "");
+  const onSubmitHandler = (values: PostOpportunityType) => {
+    const formData: PostOpportunityType = {
+      name: values.name,
+      status: values.status,
+      customerId: params.customerId ?? "",
+    };
+
     createOpportunity(formData);
   };
 

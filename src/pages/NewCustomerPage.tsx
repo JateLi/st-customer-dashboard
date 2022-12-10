@@ -1,20 +1,21 @@
 import CustomerForm from "../components/CustomerForm";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
-import { createCustomerFn } from "../api/customerApi";
-import { CustomerStatus } from "../api/types";
+import { createCustomer } from "../api/customerApi";
+import { PostCustomerType } from "../api/types";
 import { useNavigate } from "react-router-dom";
+import { covertToPostDate } from "../utils/utils";
 
 function NewCustomerPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { mutate: createCustomer } = useMutation(
-    (customer: FormData) => createCustomerFn(customer),
+  const { mutate: createNewCustomer } = useMutation(
+    (customer: PostCustomerType) => createCustomer(customer),
     {
-      onSuccess: (date) => {
-        console.log(date);
+      onSuccess: () => {
         queryClient.invalidateQueries(["customers"]);
         toast.success("Customer created successfully");
+        navigate(-1);
       },
       onError: (error: any) => {
         if (Array.isArray(error.response.data.error)) {
@@ -32,14 +33,15 @@ function NewCustomerPage() {
     }
   );
 
-  const onSubmitHandler = (values: any) => {
-    var formData = new FormData();
-    formData.set("name", values.name);
-    formData.set("email", values.email);
-    formData.set("phoneNumber", values.phoneNumber);
-    formData.set("createdDate", values.phoneNumber);
-    formData.set("status", CustomerStatus.nonActive);
-    createCustomer(formData);
+  const onSubmitHandler = (values: PostCustomerType) => {
+    const formData: PostCustomerType = {
+      name: values.name,
+      email: values.email,
+      phoneNumber: values.phoneNumber,
+      createdDate: covertToPostDate(new Date()),
+      status: values.status,
+    };
+    createNewCustomer(formData);
   };
 
   return (

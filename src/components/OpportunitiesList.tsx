@@ -29,7 +29,7 @@ function OpportunitiesList({
     );
   return (
     <div>
-      <table>
+      <table className="op_table">
         <tbody>
           <tr>
             <td>id</td>

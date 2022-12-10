@@ -1,33 +1,35 @@
-import "../App.css";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useLocalStorageState } from "ahooks";
 
-import { CustomerType } from "../api/types";
+import { CustomerType, SortedType } from "../api/types";
 import Loader from "../components/Loader/Loader";
 import CustomerItem from "../components/CustomerItem";
-import { deleteCustomerFn, getAllCustomersFn } from "../api/customerApi";
+import { deleteCustomer, getAllCustomers } from "../api/customerApi";
 import { sortListByType, covertToDisplayDate } from "../utils/utils";
 import ListHeader from "../components/ListHeader";
 
 function CustomerList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [customersData, setCustomersData] = useState<CustomerType[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [sortFilter, setSortFilter] = useState<string>("none");
-  const [isLoadingList, setIsLoadingList] = useState<boolean>(true);
+  const [sortFilter, setSortFilter] = useState<string>(SortedType.none);
+  const [customersData, setCustomersData] = useLocalStorageState<
+    CustomerType[]
+  >("local-storage-customer-list", {
+    defaultValue: [],
+  });
 
-  const { isLoading: isLoadingCustomers, refetch: getAllCustomers } = useQuery(
+  const { isLoading: isLoadingCustomers } = useQuery(
     ["customers"],
-    () => getAllCustomersFn(),
+    () => getAllCustomers(),
     {
       onSuccess: (data: CustomerType[]) => {
         setCustomersData(data);
-        setIsLoadingList(false);
       },
-      onError: (error: any) => {
+      onError: (error) => {
         toast.error((error as any).data.message, {
           position: "top-right",
         });
@@ -35,14 +37,14 @@ function CustomerList() {
     }
   );
 
-  const { mutate: deleteCustomer } = useMutation(
-    (id: string) => deleteCustomerFn(id),
+  const { mutate: deleteCustomerById } = useMutation(
+    (id: string) => deleteCustomer(id),
     {
-      onSuccess: (data: any) => {
+      onSuccess: () => {
         queryClient.invalidateQueries("customers");
         toast.success("Customer deleted successfully");
       },
-      onError(error: any) {
+      onError(error) {
         if (Array.isArray((error as any).data.error)) {
           (error as any).data.error.forEach((el: any) =>
             toast.error(el.message, {
@@ -60,13 +62,9 @@ function CustomerList() {
 
   const onDeleteHandler = (id: string) => {
     if (window.confirm("Are you sure")) {
-      deleteCustomer(id);
+      deleteCustomerById(id);
     }
   };
-
-  useEffect(() => {
-    getAllCustomers();
-  }, [getAllCustomers]);
 
   const filteredList = useMemo(() => {
     if (!customersData) return [];
@@ -76,11 +74,7 @@ function CustomerList() {
     });
   }, [customersData, sortFilter, statusFilter]);
 
-  const navToRouter = (router: string) => {
-    navigate(router);
-  };
-
-  if (isLoadingList || isLoadingCustomers) return <Loader />;
+  if (isLoadingCustomers) return <Loader />;
   return (
     <div className="App">
       <div>
@@ -90,7 +84,6 @@ function CustomerList() {
           setStatusFilter={setStatusFilter}
           sortFilter={sortFilter}
           setSortFilter={setSortFilter}
-          navTo={navToRouter}
         />
         <table>
           <tbody>

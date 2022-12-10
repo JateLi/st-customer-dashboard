@@ -1,5 +1,5 @@
 import apiClient from "./http-common";
-import { OpportunityType } from "./types";
+import { OpportunityType, PostOpportunityType } from "./types";
 
 export const getAllOpportunitiesFn = async (id: string) => {
   const response = await apiClient.get<OpportunityType>(
@@ -15,19 +15,13 @@ export const getOpportunityFn = async (id: string, opId: string) => {
   return response.data;
 };
 
-export const createOpportunityFn = async (id: string, formData: FormData) => {
+export const createOpportunityFn = async (
+  id: string,
+  formData: PostOpportunityType
+) => {
   const response = await apiClient.post<OpportunityType>(
     `/customers/${id}/opportunities/`,
-    {
-      name: formData.get("name"),
-      status: formData.get("status"),
-      customerId: formData.get("customerId"),
-    },
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
+    formData
   );
   return response.data;
 };
@@ -38,21 +32,12 @@ export const updateOpportunityFn = async ({
   opId,
 }: {
   id: string;
-  formData: FormData;
+  formData: PostOpportunityType;
   opId: string;
 }) => {
   const response = await apiClient.patch<OpportunityType>(
     `/customers/${id}/opportunities/${opId}`,
-    {
-      name: formData.get("name"),
-      status: formData.get("status"),
-      customerId: formData.get("customerId"),
-    },
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
+    formData
   );
   return response.data;
 };

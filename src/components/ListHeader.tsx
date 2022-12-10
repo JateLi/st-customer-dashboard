@@ -1,5 +1,6 @@
 import React from "react";
-import { CustomerStatus } from "../api/types";
+import { useNavigate } from "react-router-dom";
+import { CustomerStatus, SortedType } from "../api/types";
 import DropDownSelector from "./DropDownSelector";
 
 type Props = {
@@ -7,7 +8,6 @@ type Props = {
   setStatusFilter: React.Dispatch<React.SetStateAction<string>>;
   sortFilter: string;
   setSortFilter: React.Dispatch<React.SetStateAction<string>>;
-  navTo: (router: string) => void;
 };
 
 function ListHeader({
@@ -15,8 +15,8 @@ function ListHeader({
   setStatusFilter,
   sortFilter,
   setSortFilter,
-  navTo,
 }: Props) {
+  const navigate = useNavigate();
   return (
     <div
       className={
@@ -31,7 +31,7 @@ function ListHeader({
       />
       <DropDownSelector
         type={"sort by"}
-        optionsList={["none", "Name A-Z", "Name Z-A", "Newest", "Oldest"]}
+        optionsList={Object.values(SortedType)}
         onChange={setSortFilter}
         value={sortFilter}
       />
@@ -39,7 +39,7 @@ function ListHeader({
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-3"
         type="button"
-        onClick={() => navTo("/customer/new")}
+        onClick={() => navigate("/customer/new")}
       >
         + Add
       </button>

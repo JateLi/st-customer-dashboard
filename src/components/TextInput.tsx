@@ -38,6 +38,7 @@ function TextInput({
         placeholder={placeHolder}
         onChange={handleOnChange}
         value={value || ""}
+        disabled={disabled}
       />
 
       {value ? null : (

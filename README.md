@@ -1,8 +1,8 @@
 ## Getting Started
 
-First, install all exact version dependencies
+### `npm ci`
 
-npm ci
+First, install all exact version dependencies
 
 ### `npm start`
 

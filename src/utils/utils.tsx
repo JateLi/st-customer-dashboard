@@ -1,9 +1,10 @@
-import { CustomerType } from "../api/types";
+import { CustomerType, SortedType } from "../api/types";
 import { format, parse } from "date-fns";
 
 export const stringToDate = (stringDate: string) => {
   if (stringDate === "") return new Date();
-  return parse(stringDate, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+  const date = parse(stringDate, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+  return !!date.getTime() ? date : new Date();
 };
 
 export const covertToDisplayDate = (stringDate: string) => {
@@ -11,19 +12,36 @@ export const covertToDisplayDate = (stringDate: string) => {
   return format(stringToDate(stringDate), "MM/dd/yyyy HH:mm");
 };
 
+export const covertToPostDate = (date: Date) => {
+  return format(date, "yyyy-MM-dd'T'HH:mm:ss");
+};
+
+// Sort customer list base on the input type option.
 export const sortListByType = (arr: CustomerType[], type: string) => {
   switch (type) {
-    case "Name A-Z":
+    case SortedType.ascName:
       return sortedAscAlphabet(arr);
-    case "Name Z-A":
+    case SortedType.descName:
       return sortedDescAlphabet(arr);
-    case "Newest":
-      return sortedAscDate(arr);
-    case "Oldest":
+    case SortedType.ascDate:
       return sortedDescDate(arr);
+    case SortedType.descDate:
+      return sortedAscDate(arr);
     default:
-      return arr;
+      return sortedAscId(arr);
   }
+};
+
+export const sortedAscId = (arr: CustomerType[]) => {
+  return arr.sort((a, b) => {
+    if (a.id < b.id) {
+      return -1;
+    }
+    if (a.id > b.id) {
+      return 1;
+    }
+    return 0;
+  });
 };
 
 export const sortedAscAlphabet = (arr: CustomerType[]) => {

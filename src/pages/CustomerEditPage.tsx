@@ -1,10 +1,10 @@
-import "../App.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getCustomerFn, updateCustomerFn } from "../api/customerApi";
-import { CustomerType, OpportunityType } from "../api/types";
+import { useLocalStorageState } from "ahooks";
+import { getCustomer, updateCustomer } from "../api/customerApi";
+import { CustomerType, OpportunityType, PostCustomerType } from "../api/types";
 import CustomerForm from "../components/CustomerForm";
 import Loader from "../components/Loader/Loader";
 import {
@@ -17,12 +17,19 @@ function CustomerEditPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const params = useParams();
-  const [customer, setCustomer] = useState<CustomerType>();
-  const [opportunities, setOpportunities] = useState<OpportunityType[]>([]);
+  const [customer, setCustomer] = useLocalStorageState<
+    CustomerType | undefined
+  >("local-storage-customer");
+
+  const [opportunities, setOpportunities] = useLocalStorageState<
+    OpportunityType[]
+  >("local-storage-opportunity-list", {
+    defaultValue: [],
+  });
 
   const { isLoading: isLoadingCustomer, refetch: getCustomerById } = useQuery(
     ["customer"],
-    () => getCustomerFn(params.customerId ?? ""),
+    () => getCustomer(params.customerId ?? ""),
     {
       enabled: false,
       onSuccess: (data: CustomerType) => {
@@ -53,33 +60,26 @@ function CustomerEditPage() {
           console.log("opportunities ", data);
           setOpportunities(data);
         },
-        onError: (err: any) => {
-          console.log(err.response);
+        onError: () => {
+          toast.error("Got an error to load opportunities list");
         },
       }
     );
 
-  const { mutate: updateCustomer } = useMutation(
-    ({ id, formData }: { id: string; formData: FormData }) =>
-      updateCustomerFn({ id, formData }),
+  const { mutate: updateCustomerById } = useMutation(
+    ({ id, formData }: { id: string; formData: PostCustomerType }) =>
+      updateCustomer({ id, formData }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["customers"]);
         toast.success("Customer updated successfully");
+        setCustomer(undefined);
         navigate(-1);
       },
-      onError: (error: any) => {
-        if (Array.isArray(error.response.data.error)) {
-          error.data.error.forEach((el: any) =>
-            toast.error(el.message, {
-              position: "top-right",
-            })
-          );
-        } else {
-          toast.error(error.response.data.message, {
-            position: "top-right",
-          });
-        }
+      onError: (error) => {
+        toast.error((error as any).response.data.message, {
+          position: "top-right",
+        });
       },
     }
   );
@@ -88,11 +88,11 @@ function CustomerEditPage() {
     ({ id, opId }: { id: string; opId: string }) =>
       deleteOpportunityFn(id, opId),
     {
-      onSuccess: (data: any) => {
+      onSuccess: () => {
         queryClient.invalidateQueries("opportunities");
         toast.success("Opportunity deleted successfully");
       },
-      onError(error: any) {
+      onError(error) {
         if (Array.isArray((error as any).data.error)) {
           (error as any).data.error.forEach((el: any) =>
             toast.error(el.message, {
@@ -109,9 +109,10 @@ function CustomerEditPage() {
   );
 
   useEffect(() => {
+    if (!!customer) return;
     getCustomerById();
     getOpportunitiesById();
-  }, [getCustomerById, getOpportunitiesById]);
+  }, [customer, getCustomerById, getOpportunitiesById]);
 
   const onDeleteHandler = (id: string, opId: string) => {
     if (window.confirm("Are you sure")) {
@@ -119,15 +120,20 @@ function CustomerEditPage() {
     }
   };
 
-  const onSubmitHandler = (values: any) => {
-    const formData = new FormData();
-    if (!customer) return;
-    formData.set("name", values.name);
-    formData.set("email", values.email);
-    formData.set("phoneNumber", values.phoneNumber);
-    formData.set("createdDate", customer.createdDate);
-    formData.set("status", values.status);
-    updateCustomer({ id: String(customer?.id!), formData });
+  const onSubmitHandler = (values: PostCustomerType) => {
+    const formData: PostCustomerType = {
+      name: values.name,
+      email: values.email,
+      phoneNumber: values.phoneNumber,
+      createdDate: values.createdDate,
+      status: values.status,
+    };
+    updateCustomerById({ id: String(customer?.id!), formData });
+  };
+
+  const navBack = () => {
+    setCustomer(undefined);
+    navigate(-1);
   };
 
   if (isLoadingCustomer || isLoadingOpportunities) return <Loader />;
@@ -137,7 +143,7 @@ function CustomerEditPage() {
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={navBack}
         >
           Back
         </button>

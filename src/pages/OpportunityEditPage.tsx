@@ -3,7 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getOpportunityFn, updateOpportunityFn } from "../api/opportunityApi";
-import { OpportunityType } from "../api/types";
+import { OpportunityType, PostOpportunityType } from "../api/types";
+import Loader from "../components/Loader/Loader";
 import OpportunityForm from "../components/OpportunityForm";
 
 function OpportunityEditPage() {
@@ -12,7 +13,7 @@ function OpportunityEditPage() {
   const params = useParams();
   const [opportunity, setOpportunity] = useState<OpportunityType>();
 
-  const { refetch: getOpportunityById } = useQuery(
+  const { isLoading, refetch: getOpportunityById } = useQuery(
     ["opportunity"],
     () => getOpportunityFn(params.customerId ?? "", params.opId ?? ""),
     {
@@ -43,7 +44,7 @@ function OpportunityEditPage() {
       opId,
     }: {
       id: string;
-      formData: FormData;
+      formData: PostOpportunityType;
       opId: string;
     }) => updateOpportunityFn({ id, formData, opId }),
     {
@@ -72,11 +73,13 @@ function OpportunityEditPage() {
     getOpportunityById();
   }, [getOpportunityById]);
 
-  const onSubmitHandler = (values: any) => {
-    var formData = new FormData();
-    formData.set("name", values.name);
-    formData.set("status", values.status);
-    formData.set("customerId", params.customerId ?? "");
+  const onSubmitHandler = (values: PostOpportunityType) => {
+    const formData: PostOpportunityType = {
+      name: values.name,
+      status: values.status,
+      customerId: params.customerId ?? "",
+    };
+
     updateOpportunity({
       id: params.customerId ?? "",
       formData,
@@ -84,6 +87,7 @@ function OpportunityEditPage() {
     });
   };
 
+  if (isLoading) return <Loader />;
   return (
     <div className="App">
       <div className="absolute h-20 w-20 left-5 top-2">

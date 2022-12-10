@@ -2,49 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClientProvider } from "react-query";
+import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CustomerList from "./pages/CustomerListPage";
-import CustomerEditPage from "./pages/CustomerEditPage";
-import NewCustomerPage from "./pages/NewCustomerPage";
-import NewOpportunityPage from "./pages/NewOpportunityPage";
-import OpportunityEditPage from "./pages/OpportunityEditPage";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      retry: false,
-      staleTime: 5 * 60 * 1000,
-    },
-  },
-});
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <CustomerList />,
-  },
-  {
-    path: "/customer/:customerId",
-    element: <CustomerEditPage />,
-  },
-  {
-    path: "/customer/new",
-    element: <NewCustomerPage />,
-  },
-  {
-    path: "/customer/:customerId/opportunities/:opId",
-    element: <OpportunityEditPage />,
-  },
-  {
-    path: "/customer/:customerId/opportunities/new",
-    element: <NewOpportunityPage />,
-  },
-]);
+import { router } from "./router";
+import { queryClient } from "./query";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

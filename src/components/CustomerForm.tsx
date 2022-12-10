@@ -46,6 +46,7 @@ function CustomerForm({ customer, onSubmitHandler }: FormProps) {
             <TextInput
               label="created date"
               value={customer?.createdDate ?? ""}
+              disabled={true}
             />
           ) : null}
           <DropDownSelector
