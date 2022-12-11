@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import TextInput from "./TextInput";
 import { CustomerStatus, CustomerType } from "../api/types";
 import DropDownSelector from "./DropDownSelector";
+import { covertToDisplayDate } from "../utils/utils";
 
 type FormProps = {
   customer?: Partial<CustomerType>;
@@ -57,7 +58,7 @@ function CustomerForm({ customer, onSubmitHandler }: FormProps) {
           {customer?.createdDate ? (
             <TextInput
               label="created date"
-              value={customer?.createdDate ?? ""}
+              value={covertToDisplayDate(customer?.createdDate ?? "")}
               disabled={true}
             />
           ) : null}
