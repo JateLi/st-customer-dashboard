@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useLocalStorageState } from "ahooks";
 
-import { CustomerType, SortedType } from "../api/types";
+import { SortedType } from "../api/types";
 import Loader from "../components/Loader/Loader";
 import CustomerItem from "../components/CustomerItem";
 import { deleteCustomer, getAllCustomers } from "../api/customerApi";
@@ -26,19 +26,11 @@ function CustomerList() {
       defaultValue: SortedType.none,
     }
   );
-  const [customersData, setCustomersData] = useLocalStorageState<
-    CustomerType[]
-  >("local-storage-customer-list", {
-    defaultValue: [],
-  });
 
-  const { isLoading: isLoadingCustomers } = useQuery(
+  const { isLoading: isLoadingCustomers, data: customersData } = useQuery(
     ["customers"],
     () => getAllCustomers(),
     {
-      onSuccess: (data: CustomerType[]) => {
-        setCustomersData(data);
-      },
       onError: (error) => {
         toast.error((error as any).data.message, {
           position: "top-right",

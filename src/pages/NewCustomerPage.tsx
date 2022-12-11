@@ -14,6 +14,7 @@ function NewCustomerPage() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["customers"]);
+        queryClient.refetchQueries(["customers"]);
         toast.success("Customer created successfully");
         navigate(-1);
       },

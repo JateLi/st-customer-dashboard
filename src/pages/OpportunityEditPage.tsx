@@ -50,6 +50,7 @@ function OpportunityEditPage() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["opportunities"]);
+        queryClient.refetchQueries(["opportunities"]);
         toast.success("Opportunity updated successfully");
         navigate(-1);
       },

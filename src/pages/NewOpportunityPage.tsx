@@ -16,6 +16,7 @@ function NewOpportunityPage() {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["opportunities"]);
+        queryClient.refetchQueries(["opportunities"]);
         toast.success("Opportunity created successfully");
         navigate(-1);
       },

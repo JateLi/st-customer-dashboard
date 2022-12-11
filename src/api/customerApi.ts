@@ -2,7 +2,7 @@ import apiClient from "./http-common";
 import { CustomerType, PostCustomerType } from "./types";
 
 export const getAllCustomers = async () => {
-  const response = await apiClient.get<CustomerType>(`/customers`);
+  const response = await apiClient.get<CustomerType[]>(`/customers`);
   return response.data;
 };
 

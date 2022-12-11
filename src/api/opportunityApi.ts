@@ -2,7 +2,7 @@ import apiClient from "./http-common";
 import { OpportunityType, PostOpportunityType } from "./types";
 
 export const getAllOpportunitiesFn = async (id: string) => {
-  const response = await apiClient.get<OpportunityType>(
+  const response = await apiClient.get<OpportunityType[]>(
     `/customers/${id}/opportunities/`
   );
   return response.data;
